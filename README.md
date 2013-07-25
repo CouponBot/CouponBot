@@ -1,6 +1,6 @@
 CouponBot
 ================
-A bot that collects unwanted coupons and gives them to people who want them
+A Steam bot that collects unwanted coupons and gives them to people who want them
 
 Installation
 ------------
