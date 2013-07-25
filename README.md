@@ -1,9 +1,9 @@
-_steamCouponBot_
+CouponBot
 ================
-_A Steam bot inspired by the [Dota 2 Dispenser][0] that handles coupons instead_
+A bot that collects unwanted coupons and gives them to people who want them
 
-Installation Procedure
-----------------------
+Installation
+------------
 Windows:
 
 1. Download the [node.js][1] **binary** for your OS' bitness and put it in a folder called 'nodejs'
