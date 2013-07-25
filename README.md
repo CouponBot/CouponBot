@@ -1,6 +1,6 @@
 _steamCouponBot_
 ================
-_A Steam bot inspired by the Dota 2 Dispenser bot that handles coupons instead_
+_A Steam bot inspired by the [Dota 2 Dispenser][0] that handles coupons instead_
 
 Installation Procedure
 ----------------------
@@ -14,6 +14,7 @@ Windows:
 6. Install the [steam][6] module the same way using `npm install steam`
 7. You've just installed all of steamCouponBot's dependencies, but as this is a really early WIP project, the install instructions for the bot itself have yet to be written
 
+[0]: http://steamcommunity.com/id/dota2bot "Dota 2 Dispenser"
 [1]: http://nodejs.org/download/ "Node.js download page"
 [2]: http://nodejs.org/dist/npm/ "npm download page"
 [3]: https://github.com/TooTallNate/node-gyp/wiki/Visual-Studio-2010-Setup "Visual Studio 2010 configuration"
