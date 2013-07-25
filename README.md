@@ -12,7 +12,7 @@ Windows:
 4. Set up [ursa][4]'s dependencies [listed here][5]
 5. Install ursa by opening a command window in the nodejs folder and executing `npm install ursa`
 6. Install the [steam][6] module the same way using `npm install steam`
-7. You've just installed all of steamCouponBot's dependencies, but as this is a really early WIP project, the install instructions for the bot itself have yet to be written
+7. You've just installed all of steamCouponBot's dependencies, but as this is a really early WIP project, the installation instructions for the bot itself have yet to be written
 
 [0]: http://steamcommunity.com/id/dota2bot "Dota 2 Dispenser"
 [1]: http://nodejs.org/download/ "Node.js download page"
