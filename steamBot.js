@@ -21,7 +21,9 @@ var easterEggs = {
     'poop': 'piss',
     'dog': 'cat',
     'derp': 'herp',
-    'herp': 'derp'
+    'herp': 'derp',
+    'bunnywabbit': '.\n(\\__/)\n(o_O)\n( v.v )',
+    'y u no': '\u10DA(\u0CA0\u76CA\u0CA0\u10DA)'
 };
 
 
@@ -75,6 +77,22 @@ function typeMessage(steamID, message) {
 
 function log(msg) {
     console.log(msg);
+}
+
+/** 
+ * Convenience function for iterating over associative arrays/objects
+ */
+
+function getKeys(obj) {
+    var keys = [];
+
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key)) {
+            keys.push(key);
+        }
+    }
+    log(keys.join('\n'));
+    return keys;
 }
 
 fs.exists('accountData.txt', function (exists) {
@@ -214,12 +232,22 @@ fs.exists('accountData.txt', function (exists) {
                         typeMessage(uid, MSG_NOT_ADMIN);
                         log('Non-admin user with SteamID ' + uid + ' tried to execute command: ' + msg);
                     } else {
-                        if(msg in easterEggs) {
-                            log('Received easter egg: ' + msg + ' Replying with: ' + easterEggs[msg]);
+                        /** Currently broken, I'm trying to detect whether any of the easter eggs are contained in msg
+                        var inMsg = false;
+                        for(var i = 0; i < getKeys[easterEggs].length(); i++) {
+                            if(msg.toLowerCase().indexOf(keys[i]) > -1) {
+                                inMsg = true;
+                            }
+                        }
+                        if(inMsg) {
+                            log('Received easter egg from SteamID ' + uid + ': ' + msg + ' Replying with: ' + easterEggs[msg]);
                             typeMessage(uid, easterEggs[msg]);
                         } else {
                             log('Received message from SteamID ' + uid + ': ' + msg);
                         }
+                        */
+                        log(getKeys[easterEggs]);
+                        typeMessage(uid, msg);
                     }
                 }
             }
