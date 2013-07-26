@@ -1,9 +1,7 @@
-CouponBot
-================
+# CouponBot
 A Steam bot that collects unwanted coupons and gives them to people who want them
 
-Installation
-------------
+## Installation
 Windows:
 
 1. Download the [node.js][1] **binary** for your OS' bitness and put it in a folder called 'nodejs'
@@ -14,7 +12,7 @@ Windows:
 6. Install ursa by opening a command window in the nodejs folder and executing `npm install ursa`
 7. Install the [steam][7] module the same way using `npm install steam`
 8. Install the [steam-trade][8] module using `npm install git://github.com/seishun/node-steam-trade.git`
-9. Congratulations, you've just installed all of steamCouponBot's dependencies! However, since this is a really early WIP project, the installation instructions for the bot itself have yet to be written
+9. Congratulations, you've just installed all of CouponBot's dependencies! However, since this is a really early WIP project, the installation instructions for the bot itself have yet to be written
 
 [0]: http://steamcommunity.com/id/dota2bot "Dota 2 Dispenser"
 [1]: http://nodejs.org/download/ "Node.js download page"
