@@ -19,7 +19,9 @@ var MSG_TOGGLE_LIST_PREFIX = "Toggleables:\n";
 var easterEggs = {
     'ping': 'pong',
     'poop': 'piss',
-    'dog': 'cat'
+    'dog': 'cat',
+    'derp': 'herp',
+    'herp': 'derp'
 };
 
 
@@ -213,7 +215,7 @@ fs.exists('accountData.txt', function (exists) {
                         log('Non-admin user with SteamID ' + uid + ' tried to execute command: ' + msg);
                     } else {
                         if(msg in easterEggs) {
-                            log('Received easter egg: ' + msg + 'Replying with: ' + easterEggs[msg]);
+                            log('Received easter egg: ' + msg + ' Replying with: ' + easterEggs[msg]);
                             typeMessage(uid, easterEggs[msg]);
                         } else {
                             log('Received message from SteamID ' + uid + ': ' + msg);
