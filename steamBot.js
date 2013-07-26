@@ -2,14 +2,13 @@
  *          String Constants          *
  **************************************/
 var MSG_INVALID_COMMAND = "You have entered an invalid command. Please try again.";
+var MSG_NOT_ADMIN = "You are not an admin!";
 
 var MSG_SUCCESSFUL_OP = "Added ID to admins!";
 var MSG_ALREADY_OP = "That ID is already set to admin.";
 
 var MSG_SUCCESSFUL_DEOP = "Removed ID from admins!";
 var MSG_ALREADY_DEOP = "That ID is already not set to admin.";
-
-var MSG_NOT_ADMIN = "You are not an admin!";
 
 var MSG_OPS_LIST_PREFIX = "Admins:\n";
 
@@ -185,11 +184,9 @@ fs.exists('accountData.txt', function (exists) {
                             typeMessage(uid, MSG_INVALID_COMMAND);
                             log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
                         }
-
-                        /** THIS METHOD IS BROKEN RIGHT NOW BUT IT'S 2 AM AND I HAVE WORK
-                       TOMORROW MORNING SO IT'S STAYING BROKEN AND COMMENTED FOR NOW */
-                        /** "/toggle <varname>" to enable/disable a feature or whatever */
-                        /*} else if (cmdparams[0].toLowerCase() == "toggle") {
+                        
+                    /** "/toggle <varname>" to enable/disable a feature or whatever */
+                    /*} else if (cmdparams[0].toLowerCase() == "toggle") {
                         var toggleables = [
                             ["emutyping", "emutyping_enabled"]
                         ];
@@ -221,8 +218,9 @@ fs.exists('accountData.txt', function (exists) {
                             
                         } else {
                             typeMessage(uid, MSG_INVALID_COMMAND);
-                        }
-                      */
+                        }*/
+                        
+                        
                     } else {
                         typeMessage(uid, MSG_INVALID_COMMAND);
                         log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
