@@ -33,12 +33,13 @@ fs.exists('accountData.txt', function(exists) {
             bot.joinChat(chatRoomID); // autojoin on invite
     });
 
+    var easterEggs = {'ping':'pong','poop':'piss','dog':'cat'};
     bot.on('message', function(source, message, type, chatter) {
         // respond to both chat room and private messages
         if (message != '') {
             console.log('Received message: ' + message);
-            if (message == 'ping') {
-                bot.sendMessage(source, 'pong', Steam.EChatEntryType.ChatMsg); // ChatMsg by default
+            if (message in easterEggs) {
+                bot.sendMessage(source, easterEggs[message], Steam.EChatEntryType.ChatMsg); // ChatMsg by default
             }
         }
     });
