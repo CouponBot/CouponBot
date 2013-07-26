@@ -26,7 +26,7 @@ var MSG_TOGGLE_LIST_PREFIX = "Toggleables:\n";
 /** Emulated Typing mode */
 var emutyping_enabled = true; // if true, bot will seem to be typing before it sends a message
 var emutyping_speed = 20; // typing speed (in characters per second)
-var emutyping_maxdelay = 4; // maximum delay (in seconds) before the message will finally be sent
+var emutyping_maxdelay = 3; // maximum delay (in seconds) before the message will finally be sent
 
 
 /** steamID64s of all admins */
