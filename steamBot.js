@@ -47,6 +47,8 @@ fs.exists('accountData.txt', function(exists) {
         console.log('Friend Activity!');
         if (EFriendRelationship == Steam.EFriendRelationship['RequestRecipient']){
             console.log('Pending friend request!');
+            bot.addFriend(steamID);
+            console.log('Added '+String(steamID)+' to friends list');
         }
     });
     }
