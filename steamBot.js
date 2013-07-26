@@ -25,11 +25,7 @@ fs.exists('accountData.txt', function(exists) {
       Steam.friends && Steam.friends.forEach(function(steamID) {
         console.log(String(steamID));
       });
-      if (!Steam.friends){
-        //Friends list does not exist, add SoullessWaffle
-        //console.log('Adding SoullessWaffle');
-        //bot.addFriend('STEAM_0:1:24409951');
-      };
+      //bot.addFriend('STEAM_0:1:24409951');
     });
 
     bot.on('chatInvite', function(chatRoomID, chatRoomName, patronID) {
@@ -49,7 +45,7 @@ fs.exists('accountData.txt', function(exists) {
 
     bot.on('friend', function(steamID, EFriendRelationship) {
       console.log('Friend Activity!');
-      if (EFriendRelationship.RequestRecipient){
+      if (EFriendRelationship == Steam.EFriendRelationship['RequestRecipient']){
         console.log('Pending friend request!');
       }
     });
