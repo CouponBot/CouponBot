@@ -246,7 +246,8 @@ fs.exists('accountData.txt', function (exists) {
                             log('Received message from SteamID ' + uid + ': ' + msg);
                         }
                         */
-                        log(getKeys[easterEggs]);
+                        //log(getKeys[easterEggs]);
+                        log('Received message from SteamID ' + uid + ': ' + msg);
                         typeMessage(uid, msg);
                     }
                 }
@@ -261,6 +262,23 @@ fs.exists('accountData.txt', function (exists) {
                 bot.addFriend(steamID);
                 log('Added ' + String(steamID) + ' to friends list');
             }
+        });
+
+        /** Initialize the trading component of the bot; This is currently not working because I find the node-steam-trade docs rather confusing and ambiguous
+        var callback;
+        bot.on('webSessionID'), function (sessionID) {
+            log('webSessionID triggered!');
+            steamTrade.sessionID = sessionID;
+            log('sessionID set to '+String(sessionID));
+            webLogOn(callback);
+            log('webLogOn set callback to '+String(callback));
+            steamTrade.setCookie(callback);
+            log('cookie set to '+String(callback));
+        }
+        */
+
+        bot.on('error', function (e) {
+            log('An error occurred: ' + e.cause);
         });
     } else {
         log('Could not load account details, shutting down...');
