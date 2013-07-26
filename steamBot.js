@@ -29,8 +29,8 @@ fs.exists('accountData.txt', function(exists) {
     });
 
     bot.on('chatInvite', function(chatRoomID, chatRoomName, patronID) {
-          console.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
-          bot.joinChat(chatRoomID); // autojoin on invite
+            console.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
+            bot.joinChat(chatRoomID); // autojoin on invite
     });
 
     bot.on('message', function(source, message, type, chatter) {
@@ -51,8 +51,8 @@ fs.exists('accountData.txt', function(exists) {
     });
     }
     else{
-    console.log('accountData does not exist, stopping...');
-    process.exit();
+        console.log('accountData does not exist, stopping...');
+        process.exit();
     }
 });
 
