@@ -47,15 +47,17 @@ var adminIDs = [
 
 
 var Steam = require('steam');
-var bot = new Steam.SteamClient();
 var SteamTrade = require('steam-trade');
-var steamTrade = new SteamTrade();
+
+var bot = new Steam.SteamClient();
+var botTrade = new SteamTrade();
+
 var fs = require('fs');
+
 
 /** 
  * Convenience function for sending chat messages to the user
  */
-
 function typeMessage(steamID, message) {
     if(emutyping_enabled) {
         var delay = Math.min(message.length * (1000 / emutyping_speed), emutyping_maxdelay * 1000);
@@ -70,18 +72,10 @@ function typeMessage(steamID, message) {
     }
 }
 
-/** 
- * Convenience function for logging
- */
-
-function log(msg) {
-    console.log(msg);
-}
 
 /** 
  * Convenience function for iterating over associative arrays/objects
  */
-
 function getKeys(obj) {
     var keys = [];
 
@@ -94,26 +88,55 @@ function getKeys(obj) {
     return keys;
 }
 
+/**
+ * Dumps an array the same way PHP's print_r() function does
+ * Taken from http://stackoverflow.com/a/9613740/992504
+ */
+function print_r(arr,level) {
+    var dumped_text = "";
+    if(!level) level = 0;
+
+    //The padding given at the beginning of the line.
+    var level_padding = "";
+    for(var j=0;j<level+1;j++) level_padding += "    ";
+
+    if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+        for(var item in arr) {
+            var value = arr[item];
+
+            if(typeof(value) == 'object') { //If it is an array,
+                dumped_text += level_padding + "'" + item + "' ...\n";
+                dumped_text += print_r(value,level+1);
+            } else {
+                dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+            }
+        }
+    } else { //Stings/Chars/Numbers etc.
+        dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+    }
+    return dumped_text;
+}
+
 fs.exists('accountData.txt', function (exists) {
     if(exists) {
         var accountData = fs.readFileSync('accountData.txt').toString().split('\n');
-        log('Loaded account details from file');
+        console.log('Loaded account details from file');
         //log('User: '+accountData[0]+' Pass: '+accountData[1]); //print accountData to console for debugging purposes
         bot.logOn({
-            accountName: accountData[0],
-            password: accountData[1]
+            accountName: 'couponbot',//accountData[0],
+            password: 'thx4dota2'//accountData[1]
         });
 
 
         bot.on('loggedOn', function () {
-            log('Logged in as ' + bot.steamID);
+            console.log('Logged in as ' + bot.steamID);
             //moved personastate to relationships to ensure bot is ready for everything when it visibly comes online
             //bot.setPersonaName('Coupon Bot');
         });
 
 
         bot.on('relationships', function () {
-            log('Relationships loaded');
+            console.log('Relationships loaded');
             bot.setPersonaState(Steam.EPersonaState.Online);
             /*log('Steam friends list: '+String(Steam.friends));
             Steam.friends && Steam.friends.forEach(function(steamID) {
@@ -123,13 +146,23 @@ fs.exists('accountData.txt', function (exists) {
 
 
         bot.on('chatInvite', function (chatRoomID, chatRoomName, patronID) {
-            log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
+            console.log('Got an invite to ' + chatRoomName + ' from ' + bot.users[patronID].playerName);
             bot.joinChat(chatRoomID); // autojoin on invite
         });
-
-
-
-        //Merged friendMessage and message into message so admins can command bot in chat room
+        
+        
+        bot.on('webSessionID', function(sessionID) {
+            console.log('Obtained community session ID:', sessionID);
+            botTrade.sessionID = sessionID;
+            bot.webLogOn(function(cookies) {
+                console.log('got a new cookie:', cookies);
+                cookies[0].split(';').forEach(function(cookie) {
+                    botTrade.setCookie(cookie);
+                });
+            });
+        });
+        
+        
         bot.on('message', function (uid, msg, msgtype) {
             if(msgtype == Steam.EChatEntryType.ChatMsg) {
 
@@ -137,7 +170,7 @@ fs.exists('accountData.txt', function (exists) {
                 if(msg.indexOf("/") == 0 && adminIDs.indexOf(uid) > -1) {
                     var cmd = msg.substr(1);
                     var cmdparams = cmd.split(" ");
-
+                    
                     /** "/op <steamID64>" to add someone to the admin list */
                     if(cmdparams[0].toLowerCase() == "op") {
                         if(cmdparams.length == 2) {
@@ -145,15 +178,15 @@ fs.exists('accountData.txt', function (exists) {
                             //should be saving adminIDs to a file so they survive reboots
                             if(adminIDs.indexOf(cmdparams[1]) > -1) {
                                 typeMessage(uid, MSG_ALREADY_OP);
-                                log('Admin with SteamID ' + uid + ' tried to OP SteamID ' + cmdparams[1] + ' but that SteamID is already an admin!');
+                                console.log('Admin with SteamID ' + uid + ' tried to OP SteamID ' + cmdparams[1] + ' but that SteamID is already an admin!');
                             } else {
                                 adminIDs.push(cmdparams[1]);
                                 typeMessage(uid, MSG_SUCCESSFUL_OP);
-                                log('Admin with SteamID ' + uid + ' successfully OP\'d SteamID ' + cmdparams[1]);
+                                console.log('Admin with SteamID ' + uid + ' successfully OP\'d SteamID ' + cmdparams[1]);
                             }
                         } else {
                             typeMessage(uid, MSG_INVALID_COMMAND);
-                            log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
+                            console.log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
                         }
 
                         /** "/deop <steamID64>" to remove someone from the admin list */
@@ -164,25 +197,25 @@ fs.exists('accountData.txt', function (exists) {
                             var index = adminIDs.indexOf(cmdparams[1])
                             if(index == -1) {
                                 typeMessage(uid, MSG_ALREADY_DEOP);
-                                log('Admin with SteamID ' + uid + ' tried to DEOP SteamID ' + cmdparams[1] + ' but that SteamID is already DEOP\'d!');
+                                console.log('Admin with SteamID ' + uid + ' tried to DEOP SteamID ' + cmdparams[1] + ' but that SteamID is already DEOP\'d!');
                             } else {
                                 adminIDs = adminIDs.slice(0, index).concat(adminIDs.slice(index + 1));
                                 typeMessage(uid, MSG_SUCCESSFUL_DEOP);
-                                log('Admin with SteamID ' + uid + ' successfully DEOP\'d SteamID ' + cmdparams[1]);
+                                console.log('Admin with SteamID ' + uid + ' successfully DEOP\'d SteamID ' + cmdparams[1]);
                             }
                         } else {
                             typeMessage(uid, MSG_INVALID_COMMAND);
-                            log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
+                            console.log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
                         }
 
                         /** "/ops" to list all current admins */
                     } else if(cmdparams[0].toLowerCase() == "ops") {
                         if(cmdparams.length == 1) {
                             typeMessage(uid, MSG_OPS_LIST_PREFIX + adminIDs.join("\n"));
-                            log('Admin with SteamID ' + uid + ' requested the list of OPs');
+                            console.log('Admin with SteamID ' + uid + ' requested the list of OPs');
                         } else {
                             typeMessage(uid, MSG_INVALID_COMMAND);
-                            log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
+                            console.log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
                         }
                         
                     /** "/toggle <varname>" to enable/disable a feature or whatever */
@@ -223,13 +256,18 @@ fs.exists('accountData.txt', function (exists) {
                         
                     } else {
                         typeMessage(uid, MSG_INVALID_COMMAND);
-                        log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
+                        console.log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
                     }
                 } else {
-                    if(msg.indexOf("/") == 0 && adminIDs.indexOf(uid) == -1) {
+                    if(msg.indexOf("/") == 0) {
                         typeMessage(uid, MSG_NOT_ADMIN);
-                        log('Non-admin user with SteamID ' + uid + ' tried to execute command: ' + msg);
+                        console.log('Non-admin user with SteamID ' + uid + ' tried to execute command: ' + msg);
                     } else {
+                        if (msg.indexOf("trade") == 0) {
+                            bot.trade(uid);
+                        }
+                        
+                        
                         /** Currently broken, I'm trying to detect whether any of the easter eggs are contained in msg
                         var inMsg = false;
                         for(var i = 0; i < getKeys[easterEggs].length(); i++) {
@@ -238,15 +276,15 @@ fs.exists('accountData.txt', function (exists) {
                             }
                         }
                         if(inMsg) {
-                            log('Received easter egg from SteamID ' + uid + ': ' + msg + ' Replying with: ' + easterEggs[msg]);
+                            console.log('Received easter egg from SteamID ' + uid + ': ' + msg + ' Replying with: ' + easterEggs[msg]);
                             typeMessage(uid, easterEggs[msg]);
                         } else {
-                            log('Received message from SteamID ' + uid + ': ' + msg);
+                            console.log('Received message from SteamID ' + uid + ': ' + msg);
                         }
-                        */
                         //log(getKeys[easterEggs]);
-                        log('Received message from SteamID ' + uid + ': ' + msg);
+                        console.log('Received message from SteamID ' + uid + ': ' + msg);
                         typeMessage(uid, msg);
+                        */
                     }
                 }
             }
@@ -254,32 +292,50 @@ fs.exists('accountData.txt', function (exists) {
 
 
         bot.on('friend', function (steamID, relationshipStatus) {
-            //log('Friend Activity!');
+            //console.log('Friend Activity!');
             if(relationshipStatus == Steam.EFriendRelationship['RequestRecipient']) {
-                //log('Pending friend request!');
+                //console.log('Pending friend request!');
                 bot.addFriend(steamID);
-                log('Added ' + String(steamID) + ' to friends list');
+                console.log('Added ' + String(steamID) + ' to friends list');
             }
         });
+        
+        
 
-        /** Initialize the trading component of the bot; This is currently not working because I find the node-steam-trade docs rather confusing and ambiguous
-        var callback;
-        bot.on('webSessionID'), function (sessionID) {
-            log('webSessionID triggered!');
-            steamTrade.sessionID = sessionID;
-            log('sessionID set to '+String(sessionID));
-            webLogOn(callback);
-            log('webLogOn set callback to '+String(callback));
-            steamTrade.setCookie(callback);
-            log('cookie set to '+String(callback));
-        }
-        */
+        var inventory;
+        var scrap;
+        var weapons;
+        var addedScrap;
+        var client;
+        
+        
+        bot.on('tradeProposed', function(tradeID, uid) {
+            console.log('tradeProposed');
+            bot.respondToTrade(tradeID, true);
+        });
+        
+        bot.on('sessionStart', function(uid) {
+            inventory = [];
+            scrap = [];
+            weapons = 0;
+            addedScrap = [];
+            client = uid;
+
+            console.log('trading ' + bot.users[client].playerName);
+            botTrade.open(uid);
+            botTrade.loadInventory(753, 3, function(inv) {
+                inventory = inv;
+                console.log(print_r(item));
+                //scrap = inv.filter(function(item) { return item.name == 'Scrap Metal';});
+            });
+        });
+        
 
         bot.on('error', function (e) {
-            log('An error occurred: ' + e.cause);
+            console.log('An error occurred: ' + e.cause);
         });
     } else {
-        log('Could not load account details, shutting down...');
+        console.log('Could not load account details, shutting down...');
         process.exit();
     }
 });
