@@ -54,6 +54,7 @@ var botTrade = new SteamTrade();
 
 var fs = require('fs');
 
+var rest = require('./getJSON');
 
 /** 
  * Convenience function for sending chat messages to the user
@@ -125,6 +126,27 @@ function print_r(arr, level) {
         dumped_text = "===>" + arr + "<===(" + typeof (arr) + ")";
     }
     return dumped_text;
+}
+
+/**
+ * Function for verifying steamIDs
+ */
+
+function verifySteamID(steamID) {
+    var options = {
+        hostname: 'www.vacbans.com',
+        port: 443,
+        path: '/api/?call=profile&comm_id=' + steamID,
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+    log(options);
+    log('Verifying SteamID: '+steamID);
+    rest.getJSON(options, function (stat, res) {
+        log("onResult: (" + stat + ")" + JSON.stringify(res));
+    });
 }
 
 fs.exists('accountData.txt', function (exists) {
@@ -221,6 +243,7 @@ fs.exists('accountData.txt', function (exists) {
                         if(cmdparams.length == 1) {
                             typeMessage(uid, MSG_OPS_LIST_PREFIX + adminIDs.join("\n"));
                             log('Admin with SteamID ' + uid + ' requested the list of OPs');
+                            verifySteamID(uid);
                         } else {
                             typeMessage(uid, MSG_INVALID_COMMAND);
                             log('Admin with SteamID ' + uid + ' entered invalid command: ' + msg);
